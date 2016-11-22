@@ -1,0 +1,272 @@
+make :
+
+dean@dean-Vostro-1450:~/桌面/pr2$ make
+gcc -c BDS.c
+gcc BDS.o -o BDS
+gcc -c BDC_command.c
+gcc BDC_command.o -o BDC_cmd
+gcc -c BDC_random.c
+gcc BDC_random.o -o BDC_rand 
+gcc -c IDS.c
+gcc IDS.o -o IDS 
+gcc -c FS.c
+gcc FS.o -o FS 
+gcc -c FC.c
+gcc FC.o -o FC 
+rm *.o
+
+
+BDS & BDC_command:
+
+dean@dean-Vostro-1450:~/桌面/pr2$ ./BDC_cmd localhost 10357
+I
+40 80
+R 0 0
+Yes 
+W 2 30 10 I LOVE YOU
+Yes
+R 2 30
+Yes I LOVE YOU
+W 40 80
+Wrong W command
+W 0 99 10 SFSFDSF
+No
+W 99 0 10 SFAFDF
+No
+R 99 0
+No
+Q
+dean@dean-Vostro-1450:~/桌面/pr2$ 
+
+
+BDS & BDC_rand:
+dean@dean-Vostro-1450:~/桌面/pr2$ ./BDC_rand localhost 10357 20
+40 80
+>W 5 22
+>R 22 52
+>W 4 22
+>R 10 68
+>R 37 39
+>R 32 18
+>R 27 73
+>W 12 2
+>W 20 40
+>W 31 24
+>W 15 64
+>W 7 35
+>R 32 47
+>R 3 30
+>R 17 21
+>R 24 32
+>R 0 2
+>R 15 70
+>R 20 14
+dean@dean-Vostro-1450:~/桌面/pr2$ 
+
+IDS & BDC-rand:
+before scheduling(in the client):
+dean@dean-Vostro-1450:~/桌面/pr2$ ./BDC_rand localhost 10367 40
+40 80
+>R 20 70
+>W 9 38
+>R 10 13
+>W 28 54
+>R 27 56
+>W 36 47
+>R 32 40
+>R 23 0
+>W 32 54
+>R 4 22
+>R 16 78
+>R 35 3
+>W 25 2
+>W 2 67
+>W 6 68
+>W 13 0
+>R 16 16
+>W 4 19
+>W 16 18
+>W 30 4
+>R 17 14
+>W 16 38
+>R 6 53
+>W 21 18
+>W 16 45
+>R 4 23
+>R 14 3
+>R 24 18
+>W 15 26
+>W 26 62
+>R 38 51
+>R 36 70
+>R 6 61
+>R 6 79
+>R 29 16
+>R 36 63
+>R 17 18
+>R 23 3
+>W 2 2
+dean@dean-Vostro-1450:~/桌面/pr2$ 
+after scheduling(in the server):(C-LOOK)
+R 10 13
+W 13 0
+W 16 18
+R 16 16
+R 16 78
+R 20 70
+R 23 0
+W 2 67
+W 25 2
+R 27 56
+W 28 54
+W 30 4
+W 32 54
+R 32 40
+R 35 3
+W 36 47
+R 4 22
+W 4 19
+W 6 68
+W 9 38
+current total delay is 1150000
+R 6 79
+R 6 61
+R 6 53
+R 4 23
+R 38 51
+R 36 63
+R 36 70
+R 29 16
+W 26 62
+R 24 18
+W 2 2
+R 23 3
+W 21 18
+R 17 18
+R 17 14
+W 16 45
+W 16 38
+W 15 26
+R 14 3
+current total delay is 2200000
+
+
+SSTF: 
+>W 10 55
+>R 12 24
+>W 14 69
+>R 16 28
+>R 20 41
+>R 24 23
+>W 25 39
+>R 25 72
+>R 29 22
+>W 29 17
+>R 30 22
+>W 34 2
+>W 36 35
+>W 37 9
+>W 37 21
+>W 39 45
+>R 4 1
+>W 7 48
+>W 8 47
+>R 9 53
+current total delay is 790000
+>W 36 73
+>W 35 13
+>W 34 12
+>R 31 39
+>W 31 6
+>R 29 72
+>W 28 33
+>W 28 39
+>R 26 20
+>R 23 79
+>R 23 9
+>R 22 4
+>R 19 76
+>W 17 41
+>W 17 18
+>R 1 59
+>R 10 37
+>R 4 59
+>W 0 4
+current total delay is 1600000
+
+
+FS & FC & BDS:
+dean@dean-Vostro-1450:~/桌面/pr2$ ./FC localhost  12000
+> f
+Initialized!
+> mk a
+Yes!
+> mk b
+Yes!
+> ls 0
+a -----1 -----f -----0
+b -----2 -----f -----0
+> mkdir c
+Yes!
+> cd c
+Yes
+> mk b
+Yes!
+> w b 10 I LOVE YOU
+Yes!
+> cat b
+I LOVE YOU
+> ls 0
+b -----4 -----f -----10
+> cd /
+Yes
+> ls 1
+a     b     c     
+> a a 10 1234567890
+Yes!
+> cat a
+1234567890 
+> mkdir e
+Yes!
+> rmdir e
+Yes!
+> rm b
+Yes!
+> ls 0
+a -----1 -----f -----10
+c -----3 -----d -----1
+> exit
+Goodbye!
+> 
+> 
+dean@dean-Vostro-1450:~/桌面/pr2$ ./FC localhost  12000
+> f
+Initialized!
+> mk file1
+Yes!
+> rm file2
+Error: No such file!
+> mkdir dir
+Yes!
+> rmdir dir2
+Error: No such file!
+> w a 10 data
+Error: No such file!
+> ls 0
+file1 -----1 -----f -----0
+dir -----2 -----d -----0
+> cd .
+Yes
+> cd ..
+Yes
+> ls 0
+file1 -----1 -----f -----0
+dir -----2 -----d -----0
+> exit
+Goodbye!
+> 
+> 
+dean@dean-Vostro-1450:~/桌面/pr2$ 
+
+
+
